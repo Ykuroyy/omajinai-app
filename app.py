@@ -4,8 +4,7 @@ from datetime import datetime
 import random
 import os
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
+app = Flask(__name__)ba95539654d1d2a4fa26d7fbffb3357db50c299513b5de70624b7d62dcbe9eca')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///omajinai.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['TEMPLATES_AUTO_RELOAD'] = True
