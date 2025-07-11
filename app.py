@@ -71,19 +71,26 @@ def init_db():
 
 @app.route('/omajinai')
 def omajinai():
-    # データベーステーブルが存在しない場合は作成
-    with app.app_context():
-        db.create_all()
-    
-    omajinai_list = Omajinai.query.all()
-    if not omajinai_list:
-        for item in default_omajinai:
-            new_omajinai = Omajinai(text=item["text"], category=item["category"])
-            db.session.add(new_omajinai)
-        db.session.commit()
+    try:
+        # データベーステーブルが存在しない場合は作成
+        with app.app_context():
+            db.create_all()
+        
         omajinai_list = Omajinai.query.all()
-    today_omajinai = random.choice(omajinai_list)
-    return render_template('omajinai.html', omajinai=today_omajinai)
+        if not omajinai_list:
+            # バッチ処理でデータを追加
+            for item in default_omajinai:
+                new_omajinai = Omajinai(text=item["text"], category=item["category"])
+                db.session.add(new_omajinai)
+            db.session.commit()
+            omajinai_list = Omajinai.query.all()
+        
+        today_omajinai = random.choice(omajinai_list)
+        return render_template('omajinai.html', omajinai=today_omajinai)
+    except Exception as e:
+        # エラーが発生した場合はデフォルトのおまじないを返す
+        fallback_omajinai = {"text": "今日は素敵な一日になりますように。", "category": "希望"}
+        return render_template('omajinai.html', omajinai=fallback_omajinai)
 
 if __name__ == '__main__':
     with app.app_context():
