@@ -1,0 +1,473 @@
+{% extends "base.html" %}
+{% block title %}今日のおまじない{% endblock %}
+{% block content %}
+<style>
+.header, .nav {
+    display: none !important;
+}
+
+/* 美しいグラデーション背景 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        #667eea 0%, 
+        #764ba2 25%, 
+        #f093fb 50%, 
+        #f5576c 75%, 
+        #4facfe 100%);
+    background-size: 400% 400%;
+    animation: gradientFlow 15s ease infinite;
+    z-index: -2;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* キラキラパーティクル */
+.sparkles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.sparkle {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.5em;
+    animation: sparkleFloat 4s infinite ease-in-out;
+}
+
+.sparkle:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+.sparkle:nth-child(2) { top: 20%; left: 85%; animation-delay: 0.5s; }
+.sparkle:nth-child(3) { top: 30%; left: 25%; animation-delay: 1s; }
+.sparkle:nth-child(4) { top: 40%; left: 75%; animation-delay: 1.5s; }
+.sparkle:nth-child(5) { top: 50%; left: 10%; animation-delay: 2s; }
+.sparkle:nth-child(6) { top: 60%; left: 90%; animation-delay: 2.5s; }
+.sparkle:nth-child(7) { top: 70%; left: 20%; animation-delay: 0.3s; }
+.sparkle:nth-child(8) { top: 80%; left: 80%; animation-delay: 0.8s; }
+.sparkle:nth-child(9) { top: 15%; left: 60%; animation-delay: 1.3s; }
+.sparkle:nth-child(10) { top: 85%; left: 40%; animation-delay: 1.8s; }
+
+@keyframes sparkleFloat {
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: translateY(0px) rotate(0deg) scale(1); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: translateY(-20px) rotate(180deg) scale(1.2); 
+    }
+}
+
+/* メインコンテナ */
+.main-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* タイトル */
+.page-title {
+    font-size: 3.2em;
+    font-weight: 600;
+    background: linear-gradient(45deg, #fff, #ffeaa7, #fab1a0, #fd79a8);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+    animation: titleShimmer 3s ease-in-out infinite;
+    text-align: center;
+}
+
+@keyframes titleShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* おまじないカード */
+.omajinai-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 50px rgba(255, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    animation: cardFloat 3s ease-in-out infinite;
+    margin-bottom: 30px;
+}
+
+@keyframes cardFloat {
+    0%, 100% { 
+        transform: translateY(0px);
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.1),
+            0 0 50px rgba(255, 255, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+    50% { 
+        transform: translateY(-10px);
+        box-shadow: 
+            0 30px 50px rgba(0, 0, 0, 0.15),
+            0 0 70px rgba(255, 255, 255, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+}
+
+/* カード内のキラキラ装飾 */
+.omajinai-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        transparent 70%);
+    animation: cardShine 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes cardShine {
+    0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* おまじないテキスト */
+.omajinai-text {
+    font-size: 1.8em;
+    line-height: 1.6;
+    color: #2d3748;
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 500;
+    position: relative;
+    padding: 20px;
+    background: linear-gradient(135deg, 
+        rgba(255, 182, 193, 0.1) 0%,
+        rgba(221, 160, 221, 0.1) 50%,
+        rgba(173, 216, 230, 0.1) 100%);
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    animation: textGlow 2s ease-in-out infinite;
+}
+
+@keyframes textGlow {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(255, 182, 193, 0.3);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(255, 182, 193, 0.5);
+    }
+}
+
+.omajinai-text::before,
+.omajinai-text::after {
+    content: '✨';
+    position: absolute;
+    font-size: 1.5em;
+    color: rgba(255, 182, 193, 0.8);
+    animation: sparkleRotate 3s ease-in-out infinite;
+}
+
+.omajinai-text::before {
+    top: -10px;
+    left: -10px;
+}
+
+.omajinai-text::after {
+    bottom: -10px;
+    right: -10px;
+    animation-delay: 1.5s;
+}
+
+@keyframes sparkleRotate {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.2); }
+}
+
+/* カテゴリー表示 */
+.omajinai-category {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1.1em;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    animation: categoryPulse 2s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes categoryPulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+    50% { 
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+    }
+}
+
+/* メッセージテキスト */
+.message-text {
+    margin-top: 25px;
+    font-size: 1.2em;
+    color: #4a5568;
+    text-align: center;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ボタンスタイル */
+.btn-container {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.btn-magical {
+    display: inline-block;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: white;
+    padding: 15px 35px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1.2em;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 25px rgba(240, 147, 251, 0.4);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-magical:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(240, 147, 251, 0.6);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-magical::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent);
+    transition: left 0.5s;
+}
+
+.btn-magical:hover::before {
+    left: 100%;
+}
+
+/* 装飾的なハート */
+.floating-hearts {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.heart {
+    position: absolute;
+    color: rgba(255, 182, 193, 0.6);
+    font-size: 1.5em;
+    animation: heartFloat 8s infinite ease-in-out;
+}
+
+.heart:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+.heart:nth-child(2) { top: 60%; left: 85%; animation-delay: 2s; }
+.heart:nth-child(3) { top: 80%; left: 15%; animation-delay: 4s; }
+.heart:nth-child(4) { top: 30%; left: 80%; animation-delay: 6s; }
+
+@keyframes heartFloat {
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: translateY(0px) scale(1); 
+    }
+    25% { 
+        opacity: 0.7; 
+        transform: translateY(-20px) scale(1.1); 
+    }
+    50% { 
+        opacity: 0.5; 
+        transform: translateY(-10px) scale(0.9); 
+    }
+    75% { 
+        opacity: 0.8; 
+        transform: translateY(-30px) scale(1.2); 
+    }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2.5em;
+        letter-spacing: 1px;
+    }
+    
+    .omajinai-card {
+        padding: 30px 20px;
+        margin: 0 10px 30px;
+    }
+    
+    .omajinai-text {
+        font-size: 1.5em;
+        padding: 15px;
+    }
+    
+    .btn-magical {
+        padding: 12px 25px;
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 2em;
+    }
+    
+    .omajinai-text {
+        font-size: 1.3em;
+    }
+    
+    .omajinai-category {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+}
+</style>
+
+<!-- キラキラパーティクル -->
+<div class="sparkles">
+    <div class="sparkle">✨</div>
+    <div class="sparkle">💫</div>
+    <div class="sparkle">⭐</div>
+    <div class="sparkle">✨</div>
+    <div class="sparkle">🌟</div>
+    <div class="sparkle">💫</div>
+    <div class="sparkle">✨</div>
+    <div class="sparkle">⭐</div>
+    <div class="sparkle">🌟</div>
+    <div class="sparkle">✨</div>
+</div>
+
+<!-- 浮遊するハート -->
+<div class="floating-hearts">
+    <div class="heart">💖</div>
+    <div class="heart">💕</div>
+    <div class="heart">💗</div>
+    <div class="heart">💝</div>
+</div>
+
+<div class="main-container">
+    <h2 class="page-title">🌟 今日のおまじない 🌟</h2>
+    
+    <div class="omajinai-card">
+        <div class="omajinai-text">
+            "{{ omajinai.text }}"
+        </div>
+        
+        <div style="text-align: center;">
+            <div class="omajinai-category">
+                {{ omajinai.category }}
+            </div>
+        </div>
+        
+        <div class="message-text">
+            <p>🌸 このおまじないが心に響いたら、今日一日大切にしてくださいね 🌸</p>
+            <p>✨ あなたの願いが叶いますように ✨</p>
+        </div>
+    </div>
+    
+    <div class="btn-container">
+        <a href="{{ url_for('index') }}" class="btn-magical">
+            🏠 新しいおまじないを受け取る
+        </a>
+    </div>
+</div>
+
+<script>
+// ページ読み込み時のアニメーション
+document.addEventListener('DOMContentLoaded', function() {
+    // カードの登場アニメーション
+    const card = document.querySelector('.omajinai-card');
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(50px) scale(0.9)';
+    
+    setTimeout(() => {
+        card.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0) scale(1)';
+    }, 300);
+    
+    // ボタンの登場アニメーション
+    const button = document.querySelector('.btn-magical');
+    button.style.opacity = '0';
+    button.style.transform = 'translateY(30px)';
+    
+    setTimeout(() => {
+        button.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        button.style.opacity = '1';
+        button.style.transform = 'translateY(0)';
+    }, 800);
+});
+</script>
+
+{% endblock %}
+<!-- Updated: 2025-07-11 --> 
