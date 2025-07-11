@@ -6,7 +6,8 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///omajinai.db')
+# SQLiteを使用してPostgreSQLの依存関係を回避
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///omajinai.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
