@@ -57,8 +57,24 @@ default_omajinai = [
 def index():
     return render_template('index.html')
 
+@app.route('/init-db')
+def init_db():
+    with app.app_context():
+        db.create_all()
+        # デフォルトデータが存在しない場合のみ追加
+        if not Omajinai.query.first():
+            for item in default_omajinai:
+                new_omajinai = Omajinai(text=item["text"], category=item["category"])
+                db.session.add(new_omajinai)
+            db.session.commit()
+    return "データベースが初期化されました！"
+
 @app.route('/omajinai')
 def omajinai():
+    # データベーステーブルが存在しない場合は作成
+    with app.app_context():
+        db.create_all()
+    
     omajinai_list = Omajinai.query.all()
     if not omajinai_list:
         for item in default_omajinai:
